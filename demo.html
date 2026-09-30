@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="tr">
+<meta charset="utf-8">
+<title>Staj Selenium demosu</title>
+<style>body { font: 20px system-ui; max-width: 650px; margin: 60px auto; } input, button { font: inherit; padding: 8px; }</style>
+<h1>Selenium form alıştırması</h1>
+<p>Adını yazıp butona bas. Bu yerel sayfa herhangi bir servise veri göndermez.</p>
+<form id="greeting">
+  <label for="name">Adın</label>
+  <input id="name" required>
+  <button type="submit">Selamla</button>
+</form>
+<p id="result" role="status"></p>
+<script>
+document.querySelector('#greeting').addEventListener('submit', (event) => {
+  event.preventDefault();
+  document.querySelector('#result').textContent = 'Merhaba, ' + document.querySelector('#name').value + '!';
+});
+</script>
+</html>
