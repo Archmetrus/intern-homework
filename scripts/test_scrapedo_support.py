@@ -1,5 +1,6 @@
 """Gerçek token kullanmadan yerel proxy doğrulaması: python -m unittest discover -s scripts."""
 
+import os
 import base64
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -12,12 +13,13 @@ import io
 from types import SimpleNamespace
 from unittest.mock import patch, MagicMock
 
+from browser_config import configure_browser
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from scrapedo_support import ask_credentials, install_proxy_auth
 
 ROOT = Path(__file__).resolve().parents[1]
-DRIVER = '/home/ykk/.cache/selenium/chromedriver/linux64/152.0.7977.75/chromedriver'
+DRIVER = os.environ.get('CHROMEDRIVER_PATH') or None
 
 
 class ScrapedoTests(unittest.TestCase):
@@ -137,7 +139,7 @@ class ScrapedoTests(unittest.TestCase):
                     options = webdriver.ChromeOptions()
                     # Yalnızca geçici yerel testin kendi sertifikası için.
                     options.accept_insecure_certs = tls
-                    options.binary_location = '/usr/bin/google-chrome-stable'
+                    configure_browser(options)
                     for argument in ['--headless=new', f'--user-data-dir={profile}', f'--proxy-server={proxy}']:
                         options.add_argument(argument)
                     with webdriver.Chrome(service=Service(DRIVER), options=options) as driver:

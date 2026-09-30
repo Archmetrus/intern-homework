@@ -1,10 +1,24 @@
 # Staj ödevi: tarayıcı otomasyonu
 
+## Bağımsız kurulum
+
+Depoyu klonladıktan sonra proje dizinine girin. Örnek komutlar bu dizinden çalıştırılır.
+
+```sh
+python3 -m venv .venv
+./.venv/bin/python -m pip install -r requirements.txt
+```
+
+Windows: `py -m venv .venv`, ardından `.venv\Scripts\python -m pip install -r requirements.txt`. Fish başlatıcısı için fish gerekir; Python demoları doğrudan çalıştırılabilir.
+
+`CHROME_PATH` ile Chrome/Chromium çalıştırılabilir dosyasını seçebilirsiniz. Varsayılan olarak PATH aranır, bulunamazsa Selenium Manager tarayıcıyı bulur. Sürücü için mevcut `--driver` seçeneğini kullanın; testlerde `CHROMEDRIVER_PATH` kullanılabilir.
+
+
 Bu rehber; proxy, Chrome profilleri ve tarayıcı otomasyonu konularını uygulamalı
 öğrenmek için hazırlanmıştır. Anlatım dili Türkçedir. İşletim sistemi Arch Linux
 tabanlı CachyOS olarak kontrol edilmiştir. Teslim biçimi ve ödev için belirlenen
-servisler henüz netleşmemiştir. Aşağıdaki komutlar bu bilgisayardaki Linux/fish
-ortamına göre hazırlanmıştır. Chrome `google-chrome-stable` komutuyla erişilebilir.
+servisler henüz netleşmemiştir. Kabuk örnekleri Linux/fish içindir. Chrome komut adı dağıtıma göre değişebilir;
+Python demoları tarayıcıyı otomatik bulur veya `CHROME_PATH` değerini kullanır.
 Henüz ücretli servis kullanılmadı veya harici hesaplarda işlem yapılmadı.
 
 ## 1. curl ile proxy kullanımı
@@ -39,7 +53,7 @@ bir profili seçer. Chrome, yazma izni varsa yeni kullanıcı verisi dizinini il
 açılışta oluşturur.
 
 ```fish
-google-chrome-stable --user-data-dir=/home/ykk/PROJE/intern-homework/chrome-data --profile-directory=Default https://example.com
+google-chrome-stable --user-data-dir="$PWD/chrome-data" --profile-directory=Default https://example.com
 ```
 
 Chrome'un çalıştırılabilir dosya adı ve yolu işletim sistemine göre değişebilir;
@@ -58,7 +72,7 @@ Kaynak: [Chromium profilleri](https://www.chromium.org/developers/creating-and-u
 Profil alıştırmasına proxy ayarını ekle:
 
 ```fish
-google-chrome-stable --user-data-dir=/home/ykk/PROJE/intern-homework/chrome-data --proxy-server=http://HOST:PORT https://api.ipify.org
+google-chrome-stable --user-data-dir="$PWD/chrome-data" --proxy-server=http://HOST:PORT https://api.ipify.org
 ```
 
 Başlatma parametrelerini değiştirmeden önce bu dizini kullanan Chrome oturumunu
@@ -136,14 +150,13 @@ Ekran görüntülerinde ve günlüklerde parolaları, API anahtarlarını ve otu
 | Google Chrome | 152.0.7977.75 — `/usr/bin/google-chrome-stable` |
 | Python | 3.14.7 |
 | curl | 8.22.0 |
-| uv | `/home/ykk/.local/bin/uv` üzerinden erişilebilir |
+| uv | `uv (PATH)` üzerinden erişilebilir |
 | Selenium | Mevcut proje sanal ortamında 4.48.0 |
 
-Selenium sistem Python'unda bulunmuyor; mevcut proje sanal ortamında kurulu.
-Kurulumu tekrar yapmadan sürümünü şu komutla kontrol edebilirsin:
+Yukarıdaki bağımsız kurulumdan sonra Selenium sürümünü şu komutla kontrol edebilirsin:
 
 ```fish
-/home/ykk/PROJE/Selenium+Python/.venv/bin/python -c 'import selenium; print(selenium.__version__)'
+./.venv/bin/python -c 'import selenium; print(selenium.__version__)'
 ```
 
 Chrome sürüm komutu ve Selenium içe aktarma işlemi başarıyla çalıştırıldı.
@@ -157,7 +170,7 @@ terminalinde tanımlaman gerekiyor.
 `ERR_EMPTY_RESPONSE` görüyorsan önce Chrome'dan bağımsız karşılaştırmayı çalıştır:
 
 ```fish
-/home/ykk/PROJE/Selenium+Python/.venv/bin/python scripts/scrapedo_check.py
+./.venv/bin/python scripts/scrapedo_check.py
 ```
 
 Token gizli sorulur. Aynı hedefe bir API ve bir proxy isteği gönderilir;
@@ -178,14 +191,14 @@ gerçek hesapla uçtan uca bağlantı henüz doğrulanmamıştır.
 Sağlayıcı Scrape.do olarak belirlendi. Bağlantı bilgilerini terminalde görmek için:
 
 ```fish
-/home/ykk/PROJE/Selenium+Python/.venv/bin/python scripts/selenium_demo.py --scrapedo-info
+./.venv/bin/python scripts/selenium_demo.py --scrapedo-info
 ```
 
 Bağlantı kurmak için aşağıdaki komutu kullan. Token gizli olarak, ardından
 `sessionId` sorulur; Enter ile örnek oturum numarası 1234 seçilir.
 
 ```fish
-/home/ykk/PROJE/Selenium+Python/.venv/bin/python scripts/selenium_demo.py --scrapedo --url 'https://example.com' --keep-open
+./.venv/bin/python scripts/selenium_demo.py --scrapedo --url 'https://example.com' --keep-open
 ```
 
 `--url` vermezsen script proxy ile açılacak hedef bağlantıyı sorar; Enter ile
@@ -211,7 +224,7 @@ residential/mobile çıkışı denemek için `--super` ekle. Bu seçenek daha fa
 kota harcayabilir:
 
 ```fish
-/home/ykk/PROJE/Selenium+Python/.venv/bin/python scripts/selenium_demo.py --scrapedo --super --url 'https://hedef-site.com' --keep-open
+./.venv/bin/python scripts/selenium_demo.py --scrapedo --super --url 'https://hedef-site.com' --keep-open
 ```
 
 | Alan | Değer |
@@ -249,13 +262,13 @@ sonlanacağı anlamına gelmez; kararı hedef site verir.
 Önce proje klasörüne geç ve mevcut Selenium ortamının Python yolunu tanımla:
 
 ```fish
-cd /home/ykk/PROJE/intern-homework
-set -gx HW_PYTHON /home/ykk/PROJE/Selenium+Python/.venv/bin/python
+cd (git rev-parse --show-toplevel)
+set -gx HW_PYTHON "$PWD/.venv/bin/python"
 ```
 
 Python dosyaları kabuktan bağımsızdır; başlatma komutları ve `.fish` dosyaları
 fish içindir. Ortamı etkinleştirmek istersen fish komutu
-`source /home/ykk/PROJE/Selenium+Python/.venv/bin/activate.fish` şeklindedir.
+`source ./.venv/bin/activate.fish` şeklindedir.
 
 | Script | Ne yapar? |
 | --- | --- |
@@ -372,7 +385,7 @@ kullanabilir; anahtar ve çözülen token yazdırılmaz veya kalıcı profil dos
 kaydedilmez.
 
 ```fish
-/home/ykk/PROJE/Selenium+Python/.venv/bin/python scripts/anticaptcha_recaptcha_demo.py --keep-open
+./.venv/bin/python scripts/anticaptcha_recaptcha_demo.py --keep-open
 ```
 
 Script, `RecaptchaV2TaskProxyless` görevi oluşturur, sonucu bekler, yanıtı yalnızca

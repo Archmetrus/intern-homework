@@ -10,6 +10,7 @@ from getpass import GetPassWarning
 
 from scrapedo_support import PROXY, ask_credentials, install_proxy_auth
 
+from browser_config import configure_browser
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.chrome.service import Service
@@ -151,7 +152,7 @@ def main():
     if os.path.lexists(profile_dir / 'SingletonLock'):
         parser.error('Ödev profili kilitli. Bu profille açılan Chrome oturumunu kapatıp tekrar dene. Kilit dosyasını silme.')
     options = webdriver.ChromeOptions()
-    options.binary_location = '/usr/bin/google-chrome-stable'
+    configure_browser(options)
     options.add_argument('--window-size=1200,800')
     # chrome_profile.fish ile aynı kök ve alt profil; sırayla kullanılır.
     options.add_argument(f'--user-data-dir={profile_dir}')

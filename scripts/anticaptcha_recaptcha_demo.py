@@ -12,6 +12,7 @@ import urllib.error
 import urllib.request
 import warnings
 
+from browser_config import configure_browser
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
@@ -81,7 +82,7 @@ def solve(key):
 @contextmanager
 def open_demo(driver_path=None):
     options = webdriver.ChromeOptions()
-    options.binary_location = '/usr/bin/google-chrome-stable'
+    configure_browser(options)
     options.add_argument('--window-size=1200,800')
     # CAPTCHA yanıtının tarayıcı profilinde kalmaması için geçici profil kullan.
     with tempfile.TemporaryDirectory(prefix='anticaptcha-demo-', dir=ROOT) as profile:
